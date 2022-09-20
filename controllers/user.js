@@ -1,12 +1,18 @@
+// importation de bcrypt pour hasher le password
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// importer le package pour utiliser les variables d'environnement
+const dotenv = require("dotenv");
+const result = dotenv.config();
+
+// on importe le model User
 const User = require('../models/User');
 
 // fonction signup pour les nouveaux utilisateurs
 exports.signup = (req, res, next) => {
     // on appelle la fonction de hachage de "bcrypt" dans notre mdp et lui demandons de "saler" le mot de passe 10 fois
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(req.body.password, 12)
       .then(hash => {
         // on créé un utilisateur
         const user = new User({
@@ -44,9 +50,9 @@ exports.login = (req, res, next) => {
                                 token: jwt.sign(
                                     { userId: user._id },
                                     // on utilise une chaîne secrète de développement temporaire
-                                    'RANDOM_TOKEN_SECRET',
+                                    `${process.env.DB_TOKEN}`,
                                     // on définie la durée de validité du token à 24h
-                                    { expiresIn: '24h' }
+                                    { expiresIn: '1h' }
                                 )
                             });
                         }  

@@ -1,24 +1,30 @@
 // on créé une constante pour importer express avec la commande require
 const express = require('express');
-// on importe mongoose
+
+// on importe la data base du dossier db
 const mongoose = require('mongoose');
 
 const path = require('path');
 
-const saucesRoutes = require('./routes/sauces');
+// on importe la route "sauces"
+const sauceRoutes = require('./routes/sauce');
 
-// on importe le router dans app.js
+// on importe la route "user"
 const userRoutes = require('./routes/user');
 
+// on appel la méthode express dans une constante "app"
+const app = express();
 
-mongoose.connect('mongodb+srv://padesco:padesco@cluster0.vrzgmqk.mongodb.net/?retryWrites=true&w=majority',
+// importation du package pour les variables d'environnement
+const dotenv = require("dotenv");
+const result = dotenv.config();
+
+// information pour me connecter à la base de donnée mongoDB
+mongoose.connect(`${process.env.DB_CONNECT}`,
 { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
-
-// on appel la méthode express dans une constante "app"
-const app = express();
 
 // Middleware qui intercepte toute les requêtes qui contiennent du JSON pour accèder au body
 // même chose que bodyparser
@@ -35,7 +41,7 @@ app.use((req, res, next) => {
 });
 
 // on enregistre les routes ici
-app.use('/api/sauces', saucesRoutes);
+app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
