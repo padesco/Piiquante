@@ -2,16 +2,17 @@ const Sauce = require('../models/Sauce');
 const fs = require('fs');
 
 exports.createSauce = (req, res, next) => {
-    const sauceObject = req.body;
-    console.log("==>sauceObject");
+    const sauceObject = req.body.sauce;
+    console.log("sauceObject");
     console.log(sauceObject);
     // on créé l'instance thing
     const sauce = new Sauce({
         ...sauceObject,
+        name: sauceObject.name,
         userId: req.auth.userId,
-        //imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` 
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` 
     });
-    console.log("==>sauce")
+    console.log("sauce")
     console.log(sauce);
     // on enregistre l'objet dans la base de donnée
     sauce.save()
@@ -44,14 +45,14 @@ exports.deleteSauce = (req, res, next) => {
         .then(sauce => {
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({message: 'Not authorized'});
-            } //else {
+            } else {
                 //const filename = sauce.imageUrl.split('/images/')[1];
                 //fs.unlink(`images/${filename}`, () => {
-                    //Sauce.deleteOne({_id: req.params.id})
-                        //.then(() => { res.status(200).json({message: 'Objet supprimé !'})})
-                        //.catch(error => res.status(401).json({ error }));
+                    Sauce.deleteOne({_id: req.params.id})
+                        .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
+                        .catch(error => res.status(401).json({ error }));
                 //});
-            //}
+            }
         })
         .catch( error => {
             res.status(500).json({ error });

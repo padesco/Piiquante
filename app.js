@@ -1,8 +1,11 @@
 // on créé une constante pour importer express avec la commande require
 const express = require('express');
 
-// on importe la data base du dossier db
+// on importe mongoose
 const mongoose = require('mongoose');
+
+// importation de helmet
+const helmet = require("helmet");
 
 const path = require('path');
 
@@ -19,7 +22,7 @@ const app = express();
 const dotenv = require("dotenv");
 const result = dotenv.config();
 
-// information pour me connecter à la base de donnée mongoDB
+// information pour se connecter à la base de donnée mongoDB
 mongoose.connect(`${process.env.DB_CONNECT}`,
 { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -29,6 +32,8 @@ mongoose.connect(`${process.env.DB_CONNECT}`,
 // Middleware qui intercepte toute les requêtes qui contiennent du JSON pour accèder au body
 // même chose que bodyparser
 app.use(express.json());
+
+app.use(helmet());
 
 // on rajoute des headers à la réponse pour donner l'autorisation d'utiliser l'API
 app.use((req, res, next) => {

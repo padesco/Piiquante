@@ -15,10 +15,12 @@ const storage = multer.diskStorage({
   },
   // on configure le nom du fichier
   filename: (req, file, callback) => {
-    const name = file.originalname.split(' ').join('_');
+    const name = file.originalname.split(' ').join('-');
+    const imageName = name.split('.')[0];
     const extension = MIME_TYPES[file.mimetype];
-    callback(null, name + Date.now() + '.' + extension);
+    callback(null, imageName + '_' + Date.now() + '.' + extension);
+    //callback(null, `${imageName}_${Date.now()}.${extension}`);
   }
 });
 // on exporte l'élément "multer" et on indique que nous gérerons que les téléchargements de fichiers image
-module.exports = multer({storage: storage}).single('image');
+module.exports = multer({storage}).single('image');
