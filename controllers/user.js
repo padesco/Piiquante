@@ -12,7 +12,7 @@ const User = require('../models/User');
 // fonction signup pour les nouveaux utilisateurs
 exports.signup = (req, res, next) => {
     // on appelle la fonction de hachage de "bcrypt" dans notre mdp et lui demandons de "saler" le mot de passe 10 fois
-    bcrypt.hash(req.body.password, 12)
+    bcrypt.hash(req.body.password, `${process.env.DB_NUMBER_HASH}`)
       .then(hash => {
         // on créé un utilisateur
         const user = new User({

@@ -34,6 +34,7 @@ mongoose.connect(`${process.env.DB_CONNECT}`,
 app.use(express.json());
 
 app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 // on rajoute des headers à la réponse pour donner l'autorisation d'utiliser l'API
 app.use((req, res, next) => {
