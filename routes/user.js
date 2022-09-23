@@ -9,7 +9,7 @@ const connexionLimiter = require('../middleware/rateLimit');
 // il nous faut le controllers pour associer les fonctions aux différentes routes
 const userCtrl = require('../controllers/user');
 
-// création de 2 routes "POST" pour les endpoints "signup" et "login"
+// création de 2 routes "POST" pour les endpoints "signup" et "login" ainsi que les différents middleware et controleur à parcourir
 router.post('/signup', passwordValidator, connexionLimiter, userCtrl.signup);
 router.post('/login',connexionLimiter, userCtrl.login);
 

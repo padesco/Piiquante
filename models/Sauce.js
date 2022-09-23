@@ -1,6 +1,8 @@
+// importation de mongoose
 const mongoose = require('mongoose');
 
-// on utilise la fonction "schema" disponible grâce à "mongoose"
+// on utilise la fonction "schema" disponible grâce à "mongoose" pour construire le modèle 'Sauce'
+// définition des du type de donnée et spécification si la donnée est obligatoirement requise
 const sauceSchema = mongoose.Schema({
     userId: { type: String, required: true },
     name: { type: String, required: true },
@@ -15,4 +17,5 @@ const sauceSchema = mongoose.Schema({
     usersDisliked: { type: [String] }
 });
 
+// on exporte le shema pour pouvoir le réutiliser
 module.exports = mongoose.model('Sauce', sauceSchema);

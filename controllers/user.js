@@ -2,6 +2,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// importation de crypto-js pour chiffrer l'email
+const crypto = require('crypto-js');
+
 // importer le package pour utiliser les variables d'environnement
 const dotenv = require("dotenv");
 const result = dotenv.config();
@@ -11,8 +14,9 @@ const User = require('../models/User');
 
 // fonction signup pour les nouveaux utilisateurs
 exports.signup = (req, res, next) => {
+    //const emailCrypto = crypto.HmacSHA256(req.body.email, `${process.env.DB_CRYPTO}`).toString()
     // on appelle la fonction de hachage de "bcrypt" dans notre mdp et lui demandons de "saler" le mot de passe 10 fois
-    bcrypt.hash(req.body.password, `${process.env.DB_NUMBER_HASH}`)
+    bcrypt.hash(req.body.password, 12)
       .then(hash => {
         // on créé un utilisateur
         const user = new User({
@@ -49,10 +53,10 @@ exports.login = (req, res, next) => {
                                 // on utilise la fonction "sign" de "jsonwebtoken" pour chiffrer un nouveau token
                                 token: jwt.sign(
                                     { userId: user._id },
-                                    // on utilise une chaîne secrète de développement temporaire
+                                    // on utilise une chaîne secrète exporté depuis la variable d'environnement
                                     `${process.env.DB_TOKEN}`,
-                                    // on définie la durée de validité du token à 24h
-                                    { expiresIn: '1h' }
+                                    // on définie la durée de validité du token à 12h
+                                    { expiresIn: '12h' }
                                 )
                             });
                         }  

@@ -1,6 +1,7 @@
 // on importe mongoose
 const mongoose = require('mongoose');
 
+// importation du package "email-validator" pour s'assurer que le champ soit renseigné avec un email
 const emailValidator = require('email-validator');
 
 // on importe le package uniqueValidator pour s'assurer qu'un email soit utilisé qu'une seule fois
@@ -19,4 +20,5 @@ const userSchema = mongoose.Schema({
 // avec mongoose-unique-validator en plug-in, on s'assure que 2 utilisateurs ne peuvent pas partager la même adresse e-mail
 userSchema.plugin(uniqueValidator);
 
+// exportation du shema pour pouvoir l'utiliser
 module.exports = mongoose.model('User', userSchema);
