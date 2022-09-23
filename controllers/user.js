@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // importation de crypto-js pour chiffrer l'email
-const crypto = require('crypto-js');
+const cryptoJS = require('crypto-js');
 
 // importer le package pour utiliser les variables d'environnement
 const dotenv = require("dotenv");
@@ -14,13 +14,16 @@ const User = require('../models/User');
 
 // fonction signup pour les nouveaux utilisateurs
 exports.signup = (req, res, next) => {
-    //const emailCrypto = crypto.HmacSHA256(req.body.email, `${process.env.DB_CRYPTO}`).toString()
-    // on appelle la fonction de hachage de "bcrypt" dans notre mdp et lui demandons de "saler" le mot de passe 10 fois
-    bcrypt.hash(req.body.password, 12)
+    // on définit la constante "emailCrypto" et on utilise la méthode "HmacSHA256" de crypto pour chiffrer l'email
+    const emailCrypto = cryptoJS.HmacSHA256(req.body.email, `${process.env.DB_CRYPTO}`).toString()
+    // on utilise les variables d'environnement pour ne pas montrer le nombre de tour utilisé pour le salage
+    const saltRounds = parseInt(process.env.DB_SALTROUNDS)
+    // on appelle la fonction de hachage de "bcrypt" dans notre mdp et lui demandons de "saler" le mot de passe un certains nombre de fois
+    bcrypt.hash(req.body.password, saltRounds)
       .then(hash => {
         // on créé un utilisateur
         const user = new User({
-          email: req.body.email,
+          email: emailCrypto,
           password: hash
         });
         // on enregistre l'utilisateur dans la base de données
@@ -33,8 +36,10 @@ exports.signup = (req, res, next) => {
 
 // fonction login pour connecter les utilisateurs existant
 exports.login = (req, res, next) => {
+    // on définit la constante "emailCrypto" et on utilise la méthode "HmacSHA256" de crypto pour chiffrer l'email
+    const emailCrypto = cryptoJS.HmacSHA256(req.body.email, `${process.env.DB_CRYPTO}`).toString()
     // on va utiliser notre modèle mongoose pour vérifier l'email entré avec la base de données
-    User.findOne({ email: req.body.email })
+    User.findOne({ email: emailCrypto })
         .then(user => {
             // si l'email n'est pas dans la base de données erreur 401 Unauthorized
             if (user === null) {

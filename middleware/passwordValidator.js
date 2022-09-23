@@ -12,7 +12,7 @@ passwordSchema
 .has().lowercase()                              // Must have lowercase letters
 .has().digits(2)                                // Must have at least 2 digits
 .has().not().spaces()                           // Should not have spaces
-.is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
+.is().not().oneOf(['Passw0rd', 'Password123', 'Password12', 'Azerty12', 'Azerty123']); // Blacklist these values
 
 // on exporte le module et on inclu une condition 
 module.exports = (req, res, next) => {

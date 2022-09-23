@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // importation des middlewares
+const emailValidator = require('../middleware/emailValidator')
 const passwordValidator = require('../middleware/passwordValidator');
 const connexionLimiter = require('../middleware/rateLimit');
 
@@ -10,7 +11,7 @@ const connexionLimiter = require('../middleware/rateLimit');
 const userCtrl = require('../controllers/user');
 
 // création de 2 routes "POST" pour les endpoints "signup" et "login" ainsi que les différents middleware et controleur à parcourir
-router.post('/signup', passwordValidator, connexionLimiter, userCtrl.signup);
+router.post('/signup', emailValidator, passwordValidator, connexionLimiter, userCtrl.signup);
 router.post('/login',connexionLimiter, userCtrl.login);
 
 // on exporte le router pour app.js
