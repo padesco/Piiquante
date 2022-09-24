@@ -1,6 +1,6 @@
 // importation du modèle "Sauce"
 const Sauce = require('../models/Sauce');
-// importation du package fs
+// importation du package fs de mongoDB pour accéder aux fichiers du serveur
 const fs = require('fs');
 
 // fonction pour créer une sauce
@@ -23,7 +23,7 @@ exports.createSauce = (req, res, next) => {
 
 // fonction pour modifier une sauce
 exports.modifySauce = (req, res, next) => {
-    // on définit "sauceObject"
+    // on définit "sauceObject" avec les 2 cas possible
     const sauceObject = req.file ? {
         ...req.body.sauce,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -34,6 +34,12 @@ exports.modifySauce = (req, res, next) => {
             // si userId est différent du userId qui a créé le post "error not authorized"
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message : 'Not authorized'});
+                // si une image est envoyé dans la base de donnée elle est directement retiré
+                const filename = sauceObject.imageUrl.split("/images/")[1];
+                // utilisation du model "fs" de mongodb pour accéder à la base de donnée
+                fs.unlink(`images/${filename}`, (error) => {
+                    if (error) throw error;
+                })
             } else { // sinon on permet la modification du contenu du post
                 Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
                 .then(() => res.status(200).json({message : 'Objet modifié!'}))
@@ -55,6 +61,7 @@ exports.deleteSauce = (req, res, next) => {
                 res.status(401).json({message: 'Not authorized'});
             } else { // sinon on supprime le post ainsi que l'image stocké
                 const filename = sauce.imageUrl.split('/images/')[1];
+                // utilisation du model "fs" de mongodb pour accéder à la base de donnée
                 fs.unlink(`images/${filename}`, () => {
                     Sauce.deleteOne({_id: req.params.id})
                         .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
