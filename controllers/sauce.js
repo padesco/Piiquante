@@ -9,7 +9,6 @@ exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     // on supprime l'élément _id
     delete sauceObject._id;
-    delete sauceObject.userId;
     // on créé l'instance sauce avec "sauceObject", le userId et l'imageUrl avec le chemin correpondant
     const sauce = new Sauce({
         ...sauceObject,
@@ -26,10 +25,9 @@ exports.createSauce = (req, res, next) => {
 exports.modifySauce = (req, res, next) => {
     // on définit "sauceObject" avec les 2 cas possible
     const sauceObject = req.file ? {
-        ...req.body.sauce,
+        ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
-    delete sauceObject.userId;
     // on récupère la sauce sélectionné en comparant les id
     Sauce.findOne({_id: req.params.id})
         .then((sauce) => {
