@@ -52,5 +52,5 @@ server.on('listening', () => {
   console.log('Listening on ' + bind);
 });
 
-// on utilise "listen" pour écouter le PORT qui nous interesse sauf si il est déjà utilisé alors on utilise la variable environnement
+// on utilise "listen" pour écouter le PORT qui nous interesse
 server.listen(port);

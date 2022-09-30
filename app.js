@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 // importation de helmet
 const helmet = require("helmet");
 
+// importation de path qui fournit un certain nombre de petits outils pour travailler avec les chemins de fichiers
 const path = require('path');
 
 // on importe la route "sauces"

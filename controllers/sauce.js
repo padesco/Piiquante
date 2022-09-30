@@ -9,6 +9,7 @@ exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     // on supprime l'élément _id
     delete sauceObject._id;
+    delete sauceObject.userId;
     // on créé l'instance sauce avec "sauceObject", le userId et l'imageUrl avec le chemin correpondant
     const sauce = new Sauce({
         ...sauceObject,
@@ -28,6 +29,7 @@ exports.modifySauce = (req, res, next) => {
         ...req.body.sauce,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
+    delete sauceObject.userId;
     // on récupère la sauce sélectionné en comparant les id
     Sauce.findOne({_id: req.params.id})
         .then((sauce) => {
@@ -41,9 +43,9 @@ exports.modifySauce = (req, res, next) => {
                     if (error) throw error;
                 })
             } else { // sinon on permet la modification du contenu du post
-                Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
-                .then(() => res.status(200).json({message : 'Objet modifié!'}))
-                .catch(error => res.status(401).json({ error }));
+                Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+                    .then(() => res.status(200).json({message : 'Objet modifié!'}))
+                    .catch(error => res.status(401).json({ error })); 
             }
         })
         .catch((error) => {
